@@ -44,6 +44,7 @@ class Champion(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.movement_x
         self.rect.y += self.movement_y
+        print(self.rect.x, self.rect.y)
 
         if self.movement_x > 0:
             self._move(gm.SKELETON_R)
@@ -56,6 +57,19 @@ class Champion(pygame.sprite.Sprite):
 
         if self.movement_y > 0:
             self._move(gm.SKELETON_DOWN)
+
+        colliding_platforms = pygame.sprite.spritecollide(self, self.level.set_of_platforms, False)
+
+        for p in colliding_platforms:
+            if self.movement_x > 0:
+                self.rect.right = p.rect.left
+            if self.movement_x < 0:
+                self.rect.left = p.rect.right
+            if self.movement_y > 0:
+                self.rect.bottom = p.rect.top
+            if self.movement_y < 0:
+                self.rect.top = p.rect.bottom
+
 
     def get_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -89,3 +103,4 @@ class Champion(pygame.sprite.Sprite):
     def _move(self, image_list):
         self.image = image_list[self._count // 4]
         self._count = (self._count + 1) % 16
+

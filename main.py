@@ -1,9 +1,10 @@
 import pygame, os
 import module1 as gm
 import champion
+import map
 
 os.environ['SDL_VIDEO_CENTERED'] = '1' #centrowanie okna
-
+pygame.display.set_caption("Pokemon")
 pygame.init()
 
 #ustawienia ekranu
@@ -13,14 +14,17 @@ time = pygame.time.Clock()
 champion = champion.Champion(gm.SKELETON)
 champion.rect.bottom = gm.HEIGHT - 70
 champion.rect.left = 150
+our_level = map.Level1(champion)
+our_level.draw(screen)
+champion.level =our_level
 
 open_window = True
 
 while open_window:
-    screen.fill((0, 0, 0))
+    screen.fill(gm.LIGHTBLUE)
 
     #background image
-    screen.blit(gm.BACKGROUND, (0,0))
+    #screen.blit(gm.BACKGROUND, (0,0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -32,6 +36,8 @@ while open_window:
 
     champion.update()
     champion.draw(screen)
+    our_level.update()
+    our_level.draw(screen)
     pygame.display.flip()
     time.tick(30)
 
