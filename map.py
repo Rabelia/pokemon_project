@@ -25,11 +25,14 @@ class Level:
     def __init__(self, player):
         self.player = player
         self.set_of_platforms = set()
+        self.set_of_pokemons = set()
         self.world_shift = 0
 
     def draw(self, surface):
         for platform in self.set_of_platforms:
             platform.draw(surface)
+        for pokemons in self.set_of_pokemons:
+            pokemons.draw(surface)
 
 
     def update(self):
@@ -57,15 +60,20 @@ class Level:
     def _shift_world_LR(self, shift_x):
         for p in self.set_of_platforms:
             p.rect.x += shift_x
+        for pok in self.set_of_pokemons:
+            pok.rect.x += shift_x
 
     def _shift_world_TD(self, shift_y):
         for p in self.set_of_platforms:
             p.rect.y += shift_y
+        for pok in self.set_of_pokemons:
+            pok.rect.y += shift_y
 
 class Level1(Level):
     def __init__(self, player = None):
         super().__init__(player)
         self._create_platforms()
+        self._create_pokemons()
 
     def _create_platforms(self):
         # lista [width, height, pos-x, pos-y]
@@ -74,3 +82,8 @@ class Level1(Level):
 
         for build in building:
             self.set_of_platforms.add(OurMap(gm.BUILDINGS, *build))
+    def _create_pokemons(self):
+        pokemons = [[50,50,200,300],[60,50,300,150]]
+
+        for poke in pokemons:
+            self.set_of_pokemons.add(OurMap(gm.POKEMONS, *poke))

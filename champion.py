@@ -1,6 +1,6 @@
 import pygame, os
 import module1 as gm
-
+from pokeball import Pokeball
 class Champion(pygame.sprite.Sprite):
     def __init__(self, file_image):
         super().__init__()
@@ -11,32 +11,49 @@ class Champion(pygame.sprite.Sprite):
         self.press_left = False
         self.press_right = False
         self.rotate_left = False
-        self.rotate_down = False
+        self.rotate_down = True
+        self.rotate_right = False
+        self.rotate_up = False
         self.press_up = False
         self.press_down = False
-        self.eq = {}
-        self.level = None
         self._count = 0
+        self.pokeball_group = pygame.sprite.Group()
+
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
     def turn_right(self):
-        self.rotate_left = False
+        self.rotate_right = True
+        self.rotate_left = 0
+        self.rotate_down = 0
+        self.rotate_up = 0
         self.movement_x = 4
 
     def turn_left(self):
         self.rotate_left = True
+        self.rotate_right = 0
+        self.rotate_down = 0
+        self.rotate_up = 0
         self.movement_x = -4
 
     def turn_up(self):
-        self.rotate_down = False
+        self.rotate_up = True
+        self.rotate_down = 0
+        self.rotate_left = 0
+        self.rotate_right = 0
         self.movement_y = -4
 
     def turn_down(self):
         self.rotate_down = True
+        self.rotate_up = 0
+        self.rotate_left = 0
+        self.rotate_right = 0
         self.movement_y = 4
 
+    def create_pokeball(self):
+        return Pokeball(gm.POKEBALL,self.rect.x, self.rect.y,
+                        [self.rotate_down, self.rotate_up, self.rotate_left, self.rotate_right])
     def stop(self):
         self.movement_x = 0
         self.movement_y = 0
@@ -44,7 +61,8 @@ class Champion(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.movement_x
         self.rect.y += self.movement_y
-        print(self.rect.x, self.rect.y)
+        #print(self.rect.x, self.rect.y)
+        self.pokeball_group.update()
 
         if self.movement_x > 0:
             self._move(gm.SKELETON_R)
@@ -85,6 +103,9 @@ class Champion(pygame.sprite.Sprite):
             if event.key == pygame.K_DOWN:
                 self.press_down = True
                 self.turn_down()
+            if event.key == pygame.K_SPACE:
+                self.pokeball_group.add(self.create_pokeball())
+
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
